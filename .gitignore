@@ -14,5 +14,7 @@
 *.dSYM/
 .vscode/
 
-# Tester files
+# Test files
 main.c
+*.txt
+gnl/
