@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:03 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/12 10:14:34 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/12 13:33:59 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@
 # include <limits.h>
 
 char	*get_next_line(int fd);
+char	*ft_strjoin(const char *s1, const char *s2);
 
 #endif
