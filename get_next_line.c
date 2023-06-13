@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/13 19:45:00 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/13 20:07:17 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_next_line(int fd)
 	if (!buff)
 		return (NULL);
 	pos = get_newline_pos(storage[fd]);
-	while (pos == 0)
+	while (pos != 0)
 	{
 		pos = read(fd, buff, BUFFER_SIZE);
 		if (pos == -1)
