@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:03 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/13 20:06:45 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/25 02:47:27 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 4096
+#  define BUFFER_SIZE 4
 # endif
 
 # include <unistd.h>
