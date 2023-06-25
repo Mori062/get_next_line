@@ -1,11 +1,7 @@
-storage[fd] -> as
-qwertyuio
-storage[fd] -> 
-asjkljkl
-storage[fd] -> zxc
-
-storage[fd] -> 
-qw
-zxc
-41234123
-
+0: qwertyuio
+1: asdfghjkl
+2: 
+3: zxcvbnm
+4: 
+qwerty5: u1234
+6: (null)
