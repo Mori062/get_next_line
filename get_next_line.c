@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/25 18:53:40 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/25 19:01:14 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ size_t	find_newline_pos(char *str)
 	size_t	i;
 
 	i = 0;
-	if (str == NULL)
-		return (0);
 	while (str[i])
 	{
 		if (str[i] == '\n')
@@ -81,8 +79,8 @@ char	*ft_strnjoin(char *s1, char *s2, size_t n)
 	size_t	j;
 
 	// printf("%s\n", s1);
-	// if (!s2)
-	// 	return (NULL);
+	if (!s2)
+		return (NULL);
 	if (!s1)
 		str = (char *)malloc(sizeof(char) * (n + 1));
 	else
@@ -127,6 +125,11 @@ char	*get_next_line(int fd)
 	if (!buff)
 		return (NULL);
 	int count = 0;
+	if (storage[fd])
+	{
+		arr = ft_strnjoin(NULL, storage[fd], find_newline_pos(storage[fd]) + BUFFER_SIZE);
+		// printf("ue arr = %s\n", arr);
+	}
 	while (1)
 	{
 		read_size = read(fd, buff, BUFFER_SIZE);
@@ -135,22 +138,15 @@ char	*get_next_line(int fd)
 		if (read_size == 0)
 			break ;
 		buff[BUFFER_SIZE] = '\0';
-		if (storage[fd])
-		{
-			arr = ft_strnjoin(storage[fd], buff, find_newline_pos(storage[fd]) + BUFFER_SIZE);
-			// printf("ue arr = %s\n", arr);
-		}
 		// printf("find_new_line -> %zu\n",find_newline_pos(buff));
 		if (find_newline_pos(buff) < BUFFER_SIZE)
 		{
 			// printf("入ったよ！   ");
 			flag += 1;
 			// printf("flag -> %zu\n", flag);
-			storage[fd] = ft_substr(buff, find_newline_pos(buff) + 1, BUFFER_SIZE - find_newline_pos(buff));
+			// storage[fd] = ft_substr(buff, find_newline_pos(buff) + 1, BUFFER_SIZE - find_newline_pos(buff));
 			// printf("%d : storage[fd] -> %s\n", count, storage[fd]);
 		}
-		if (storage[fd])
-			buff = NULL;
 		printf("arr = %s\nbuff = %s\n", arr, buff);
 		arr = ft_strnjoin(arr, buff, find_newline_pos(buff));
 		printf("arr = %s\n", arr);
@@ -160,6 +156,8 @@ char	*get_next_line(int fd)
 		// printf("%zu\n", flag);
 		// printf("%s\n", arr);
 	}
+			storage[fd] = ft_substr(buff, find_newline_pos(buff) + 1, BUFFER_SIZE - find_newline_pos(buff));
+
 	return (arr);
 }
 
@@ -174,7 +172,7 @@ int	main(void)
 	test = get_next_line(fd);
 	while (test)
 	{
-		// printf("test : %s\n", test);
+		printf("test : %s\n", test);
 		// free(test);
 		test = get_next_line(fd);
 	}
