@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/26 16:55:00 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/27 13:33:31 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ char	*get_next_line(int fd)
 	char		*arr;
 	static char	*storage[OPEN_MAX];
 	size_t		read_size;
-	size_t		i;
+	// size_t		i;
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -152,10 +152,10 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (storage[fd])
 		arr = ft_strdup(storage[fd]);
-	i = 0;
+	// i = 0;
 	while (1)
 	{
-		if (ft_strlen(arr) < BUFFER_SIZE + 1)
+		if (ft_strlen(storage[fd]) < BUFFER_SIZE + 1)
 		{
 			read_size = read(fd, buff, BUFFER_SIZE);
 			if (read_size < 0)
@@ -175,19 +175,15 @@ char	*get_next_line(int fd)
 		}
 		else
 		{
+			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]));
+			storage[fd] = keep_store(arr, newline_pos(arr));
+			storage[fd] = ft_strnjoin(storage[fd], buff, newline_pos(buff));
 		}
-		arr = arr_to_buff(arr, buff, newline_pos(buff));
-		////////////////////そもそもarrとbuffを足してその後に改行があるかどうかを確認するべき
+		// printf("\x1b[31mbuff: %s\n\x1b[0m", buff);
 		// printf("buff: %s\n", buff);
-		storage[fd] = keep_store(buff, newline_pos(buff));
-		// printf("arr: %s\n", arr);
+		// if (i++ > 100)
+		// 	break ;
 		if (ft_strchr(arr, '\n'))
-			break ;
-		printf("====================\n");
-		printf("arr: %s\n", arr);
-		printf("storage: %s\n", storage[fd]);
-		printf("buff: %s\n", buff);
-		if (i++ > 100)
 			break ;
 	}
 	return (arr);
