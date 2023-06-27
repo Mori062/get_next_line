@@ -1,22 +1,26 @@
 #include <stdio.h>
 
-size_t	ft_strlen(char *s)
+int	newline_ex(char *s, int c)
 {
 	size_t	i;
 
 	i = 0;
-	if (!s)
-		return (0);
 	while (s[i])
+	{
+		if (s[i] == c)
+			return (0);
 		i++;
-	return (i);
+	}
+	if (s[i] == c)
+		return (0);
+	return (1);
 }
 
 int	main(void){
-	char	*test = NULL;
+	char	*test = "";
 
 	printf("test: %s\n", test);
-	printf("strlen: %zu\n", ft_strlen(test));
+	printf("strlen: %d\n", newline_ex(test, '\n'));
 	printf("\n");
 	return (0);
 }

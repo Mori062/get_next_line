@@ -6,26 +6,26 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/27 13:33:31 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/27 14:28:52 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strchr(char *s, int c)
+int	newline_ex(char *s, int c)
 {
 	size_t	i;
 
 	i = 0;
 	while (s[i])
 	{
-		if ((char)c == s[i])
-			return (&s[i]);
+		if (s[i] == c)
+			return (0);
 		i++;
 	}
-	if ((char)c == s[i])
-		return (&s[i]);
-	return (NULL);
+	if (s[i] == c)
+		return (0);
+	return (1);
 }
 
 size_t	ft_strlen(char *s)
@@ -142,7 +142,6 @@ char	*get_next_line(int fd)
 	char		*arr;
 	static char	*storage[OPEN_MAX];
 	size_t		read_size;
-	// size_t		i;
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -152,64 +151,52 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (storage[fd])
 		arr = ft_strdup(storage[fd]);
-	// i = 0;
 	while (1)
 	{
-		if (ft_strlen(storage[fd]) < BUFFER_SIZE + 1)
-		{
-			read_size = read(fd, buff, BUFFER_SIZE);
-			if (read_size < 0)
-				break;
-			if (read_size == 0)
-				return (NULL);
-			buff[read_size] = '\0';
-		}
-		else
-		{
-			buff = NULL;
-		}
+		read_size = read(fd, buff, BUFFER_SIZE);
+		if (read_size < 0)
+			break;
+		if (read_size == 0)
+			return (NULL);
+		buff[read_size] = '\0';
 		if (newline_pos(arr) == ft_strlen(arr))
 		{
-			arr = arr_to_buff(arr, buff, newline_pos(buff));
+			arr = ft_strnjoin(arr, buff, newline_pos(buff));
 			storage[fd] = keep_store(buff, newline_pos(buff));
 		}
 		else
 		{
 			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]));
-			storage[fd] = keep_store(arr, newline_pos(arr));
+			storage[fd] = keep_store(storage[fd], newline_pos(storage[fd]));
 			storage[fd] = ft_strnjoin(storage[fd], buff, newline_pos(buff));
 		}
-		// printf("\x1b[31mbuff: %s\n\x1b[0m", buff);
-		// printf("buff: %s\n", buff);
-		// if (i++ > 100)
-		// 	break ;
-		if (ft_strchr(arr, '\n'))
+		if (!newline_ex(arr, '\n'))
 			break ;
 	}
 	return (arr);
 }
 
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	char	*test = "";
-	int		fd;
-	int		i;
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main(void)
+// {
+// 	char	*test = "";
+// 	int		fd;
+// 	int		i;
 
-	fd = open("test1.txt", O_RDONLY);
-	i = 0;
-	while (1)
-	{
-		test = get_next_line(fd);
-		printf("%d: %s", i++, test);
-		if (test == NULL)
-			break ;
-	}
-	printf("\n");
-	// free(test);
-	close(fd);
-}
+// 	fd = open("test1.txt", O_RDONLY);
+// 	i = 0;
+// 	while (1)
+// 	{
+// 		test = get_next_line(fd);
+// 		printf("%d: %s", i++, test);
+// 		if (test == NULL)
+// 			break ;
+// 	}
+// 	printf("\n");
+// 	// free(test);
+// 	close(fd);
+// }
 
 // __attribute__((destructor)) static void	destructor(void)
 // {
