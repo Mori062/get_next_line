@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:03 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/25 22:48:40 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/27 14:29:18 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@
 # include <limits.h>
 # include <stdio.h>
 
+
+char	*get_next_line(int fd);
 
 #endif
