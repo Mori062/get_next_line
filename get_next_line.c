@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 04:34:16 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/29 04:38:38 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,17 +141,15 @@ char	*get_next_line(int fd)
 		arr = ft_strdup(storage[fd]);
 	while (1)
 	{
-		// printf("--------------------\n");
 		read_size = read(fd, buff, BUFFER_SIZE);
 		if (read_size < 0)
-			break;
+			break ;
 		buff[read_size] = '\0';
 		if (!buff[0] && arr[0])
 			return (arr);
 		if (read_size == 0)
 			return (NULL);
-		// printf("newline_pos(arr): %zu\n, ft_strlen(arr): %zu\n", newline_pos(arr), ft_strlen(arr));
-		if (newline_pos(arr) != ft_strlen(arr)) // storageに改行がある場合
+		if (newline_pos(arr) != ft_strlen(arr))
 		{
 			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]), 0);
 			storage[fd] = keep_store(storage[fd], newline_pos(storage[fd]), 1);
@@ -162,37 +160,34 @@ char	*get_next_line(int fd)
 			arr = ft_strnjoin(arr, buff, newline_pos(buff), 1);
 			storage[fd] = keep_store(buff, newline_pos(buff), 0);
 		}
-		// printf("arr: %s\n", arr);
-		// printf("storage[fd]: %s\n", storage[fd]);
-		// printf("buff: %s\n", buff);
 		if (newline_ex(arr, '\n') == 0)
-			break;
+			break ;
 	}
 	free(buff);
 	return (arr);
 }
 
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	char	*test = "";
-	int		fd;
-	int		i;
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main(void)
+// {
+// 	char	*test = "";
+// 	int		fd;
+// 	int		i;
 
-	fd = open("get_next_line.c", O_RDONLY);
-	i = 0;
-	while (1)
-	{
-		test = get_next_line(fd);
-		printf("%d: %s", i++, test);
-		if (test == NULL)
-			break ;
-		free(test);
-	}
-	printf("\n");
-	close(fd);
-}
+// 	fd = open("get_next_line.c", O_RDONLY);
+// 	i = 0;
+// 	while (1)
+// 	{
+// 		test = get_next_line(fd);
+// 		printf("%d: %s", i++, test);
+// 		if (test == NULL)
+// 			break ;
+// 		free(test);
+// 	}
+// 	printf("\n");
+// 	close(fd);
+// }
 
 // __attribute__((destructor))
 // static void	destructor(void){
