@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 04:38:38 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/29 07:51:32 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,9 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
-	arr = NULL;
+	arr = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buff)
+	if (!buff || !arr)
 		return (NULL);
 	if (storage[fd])
 		arr = ft_strdup(storage[fd]);
@@ -148,7 +148,10 @@ char	*get_next_line(int fd)
 		if (!buff[0] && arr[0])
 			return (arr);
 		if (read_size == 0)
+		{
+			free(buff);
 			return (NULL);
+		}
 		if (newline_pos(arr) != ft_strlen(arr))
 		{
 			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]), 0);
@@ -167,29 +170,29 @@ char	*get_next_line(int fd)
 	return (arr);
 }
 
-// #include <fcntl.h>
-// #include <stdio.h>
-// int	main(void)
-// {
-// 	char	*test = "";
-// 	int		fd;
-// 	int		i;
+#include <fcntl.h>
+#include <stdio.h>
+int	main(void)
+{
+	char	*test = "";
+	int		fd;
+	int		i;
 
-// 	fd = open("get_next_line.c", O_RDONLY);
-// 	i = 0;
-// 	while (1)
-// 	{
-// 		test = get_next_line(fd);
-// 		printf("%d: %s", i++, test);
-// 		if (test == NULL)
-// 			break ;
-// 		free(test);
-// 	}
-// 	printf("\n");
-// 	close(fd);
-// }
+	fd = open("get_next_line.c", O_RDONLY);
+	i = 0;
+	while (1)
+	{
+		test = get_next_line(fd);
+		printf("%d: %s", i++, test);
+		if (test == NULL)
+			break ;
+		free(test);
+	}
+	printf("\n");
+	close(fd);
+}
 
-// __attribute__((destructor))
-// static void	destructor(void){
-// 	system("leaks -q a.out");
-// }
+__attribute__((destructor))
+static void	destructor(void){
+	system("leaks -q a.out");
+}
