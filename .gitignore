@@ -16,5 +16,7 @@
 
 # Test files
 main.c
-# *.txt
+a.c
+*.txt
 gnl/
+gnlTester/

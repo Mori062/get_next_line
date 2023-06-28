@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/27 14:28:52 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/28 15:20:58 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,22 +100,6 @@ char	*ft_strnjoin(char *s1, char *s2, size_t len)
 	return (str);
 }
 
-char	*arr_to_buff(char *arr, char *buff, size_t len)
-{
-	// char	*tmp;
-
-	if (!arr)
-		arr = ft_strdup(buff);
-	else
-	{
-		// tmp = ft_strnjoin(arr, buff, len);
-		// free(arr);
-		// arr = tmp;
-		arr = ft_strnjoin(arr, buff, len);
-	}
-	return (arr);
-}
-
 char	*keep_store(char *buff, size_t pos)
 {
 	char	*tmp;
@@ -156,9 +140,11 @@ char	*get_next_line(int fd)
 		read_size = read(fd, buff, BUFFER_SIZE);
 		if (read_size < 0)
 			break;
+		buff[read_size] = '\0';
+		if (!buff[0] && arr[0])
+			return (arr);
 		if (read_size == 0)
 			return (NULL);
-		buff[read_size] = '\0';
 		if (newline_pos(arr) == ft_strlen(arr))
 		{
 			arr = ft_strnjoin(arr, buff, newline_pos(buff));
