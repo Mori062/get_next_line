@@ -6,7 +6,7 @@
 /*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 07:51:32 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/06/29 09:01:40 by morishitash      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*ft_strdup(char *s)
 	while (s[i])
 		str[j++] = s[i++];
 	str[i] = '\0';
-	free(s);
+	// free(s);
 	return (str);
 }
 
@@ -133,9 +133,12 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
-	arr = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	// arr = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	// if (!arr)
+	// 	return (NULL);
+	arr = NULL;
 	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buff || !arr)
+	if (!buff)
 		return (NULL);
 	if (storage[fd])
 		arr = ft_strdup(storage[fd]);
@@ -165,6 +168,7 @@ char	*get_next_line(int fd)
 		}
 		if (newline_ex(arr, '\n') == 0)
 			break ;
+		// free(buff);
 	}
 	free(buff);
 	return (arr);
@@ -178,7 +182,7 @@ int	main(void)
 	int		fd;
 	int		i;
 
-	fd = open("get_next_line.c", O_RDONLY);
+	fd = open("test1.txt", O_RDONLY);
 	i = 0;
 	while (1)
 	{
@@ -192,7 +196,7 @@ int	main(void)
 	close(fd);
 }
 
-__attribute__((destructor))
-static void	destructor(void){
-	system("leaks -q a.out");
-}
+// __attribute__((destructor))
+// static void	destructor(void){
+// 	system("leaks -q a.out");
+// }
