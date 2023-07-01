@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
+/*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 09:51:38 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/07/02 01:05:03 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ int	main(void)
 	int		fd;
 	int		i;
 
-	fd = open("get_next_line.c", O_RDONLY);
+	fd = open("test1.txt", O_RDONLY);
 	i = 0;
 	while (1)
 	{
@@ -192,7 +192,7 @@ int	main(void)
 	close(fd);
 }
 
-__attribute__((destructor))
-static void	destructor(void){
-	system("leaks -q a.out");
-}
+// __attribute__((destructor))
+// static void	destructor(void){
+// 	system("leaks -q a.out");
+// }
