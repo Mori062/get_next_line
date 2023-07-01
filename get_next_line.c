@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/07/02 01:05:03 by shmorish         ###   ########.fr       */
+/*   Created: 2023/07/02 00:21:31 by shmorish          #+#    #+#             */
+/*   Updated: 2023/07/02 08:31:30 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,6 @@ int	newline_ex(char *s, int c)
 	return (1);
 }
 
-size_t	ft_strlen(char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
-
 size_t	newline_pos(char *s)
 {
 	size_t	i;
@@ -56,141 +44,122 @@ size_t	newline_pos(char *s)
 	return (i);
 }
 
-char	*ft_strdup(char *s)
+char	*get_before_newline(char *s)
 {
-	char	*str;
+	char	*ret;
+	size_t	i;
+
+	i = 0;
+	ret = (char *)malloc(sizeof(char) * (newline_pos(s) + 1));
+	if (!ret)
+		return (NULL);
+	while (s[i] && s[i] != '\n')
+	{
+		ret[i] = s[i];
+		i++;
+	}
+	if (s[i] == '\n')
+		ret[i++] = '\n';
+	ret[i] = '\0';
+	return (ret);
+}
+
+char	*get_after_newline(char *s)
+{
+	char	*ret;
 	size_t	i;
 	size_t	j;
 
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!str)
-		return (NULL);
 	i = 0;
 	j = 0;
+	ret = (char *)malloc(sizeof(char) * (ft_strlen(s) - newline_pos(s) + 1));
+	if (!ret)
+		return (NULL);
+	while (s[i] && s[i] != '\n')
+		i++;
+	i++;
+	if (s[i] == '\0')
+	{
+		free(ret);
+		free(s);
+		return (NULL);
+	}
 	while (s[i])
-		str[j++] = s[i++];
-	str[i] = '\0';
+		ret[j++] = s[i++];
+	ret[j] = '\0';
 	free(s);
-	return (str);
-}
-
-char	*ft_strnjoin(char *s1, char *s2, size_t len, size_t check)
-{
-	char	*str;
-	size_t	i;
-	size_t	j;
-
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + len + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	j = 0;
-	if (s1)
-	{
-		while (s1[i])
-			str[j++] = s1[i++];
-	}
-	i = 0;
-	if (s2)
-	{
-		while (s2[i] && i < len)
-			str[j++] = s2[i++];
-	}
-	str[j] = '\0';
-	if (check == 1)
-		free(s1);
-	return (str);
-}
-
-char	*keep_store(char *buff, size_t pos, size_t check)
-{
-	char	*tmp;
-	size_t	i;
-
-	i = 0;
-	if (!buff)
-	{
-		free(buff);
-		return (NULL);
-	}
-	tmp = (char *)malloc(sizeof(char) * (ft_strlen(buff) - pos + 1));
-	if (!tmp)
-		return (NULL);
-	while (buff[pos])
-		tmp[i++] = buff[pos++];
-	tmp[i] = '\0';
-	if (check == 1)
-		free(buff);
-	return (tmp);
+	return (ret);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buff;
-	char		*arr;
-	static char	*storage[OPEN_MAX];
-	size_t		read_size;
+	static char	*store[OPEN_MAX];
+	char		*buf;
+	char		*line;
+	int			read_size;
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
-	arr = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buff || !arr)
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
 		return (NULL);
-	if (storage[fd])
-		arr = ft_strdup(storage[fd]);
 	while (1)
 	{
-		read_size = read(fd, buff, BUFFER_SIZE);
-		if (read_size < 0)
-			break ;
-		buff[read_size] = '\0';
-		if (!buff[0] && arr[0])
-			return (arr);
-		if (read_size == 0)
+		read_size = read(fd, buf, BUFFER_SIZE);
+		if (read_size == -1)
 		{
-			free(buff);
+			free(buf);
 			return (NULL);
 		}
-		if (newline_pos(arr) != ft_strlen(arr))
+		if (read_size == 0 && store[fd] == NULL)
 		{
-			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]), 0);
-			storage[fd] = keep_store(storage[fd], newline_pos(storage[fd]), 1);
-			storage[fd] = ft_strnjoin(storage[fd], buff, newline_pos(buff), 1);
+			free(buf);
+			return (NULL);
 		}
+		buf[read_size] = '\0';
+		if (store[fd] == NULL)
+			store[fd] = ft_strdup(buf);
 		else
+			store[fd] = ft_strjoin(store[fd], buf);
+		if (!newline_ex(store[fd], '\n'))
 		{
-			arr = ft_strnjoin(arr, buff, newline_pos(buff), 1);
-			storage[fd] = keep_store(buff, newline_pos(buff), 0);
+			line = get_before_newline(store[fd]);
+			store[fd] = get_after_newline(store[fd]);
+			free(buf);
+			return (line);
 		}
-		if (newline_ex(arr, '\n') == 0)
-			break ;
+		if (read_size == 0)
+		{
+			line = ft_strdup(store[fd]);
+			free(store[fd]);
+			store[fd] = NULL;
+			free(buf);
+			return (line);
+		}
 	}
-	free(buff);
-	return (arr);
 }
 
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	char	*test = "";
-	int		fd;
-	int		i;
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main(void)
+// {
+// 	char	*test = "";
+// 	int		fd;
+// 	int		i;
 
-	fd = open("test1.txt", O_RDONLY);
-	i = 0;
-	while (1)
-	{
-		test = get_next_line(fd);
-		printf("%d: %s", i++, test);
-		if (test == NULL)
-			break ;
-		free(test);
-	}
-	printf("\n");
-	close(fd);
-}
+// 	fd = open("test1.txt", O_RDONLY);
+// 	i = 0;
+// 	while (1)
+// 	{
+// 		test = get_next_line(fd);
+// 		printf("%d: %s", i++, test);
+// 		if (test == NULL)
+// 			break ;
+// 		free(test);
+// 	}
+// 	printf("\n");
+// 	close(fd);
+// }
 
 // __attribute__((destructor))
 // static void	destructor(void){

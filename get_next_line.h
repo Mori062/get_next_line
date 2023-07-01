@@ -6,7 +6,7 @@
 /*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:03 by morishitash       #+#    #+#             */
-/*   Updated: 2023/07/02 04:41:13 by shmorish         ###   ########.fr       */
+/*   Updated: 2023/07/02 08:24:57 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 4
+#  define BUFFER_SIZE 1
 # endif
 
 # include <unistd.h>
@@ -24,5 +24,12 @@
 
 
 char	*get_next_line(int fd);
+size_t	ft_strlen(char *s);
+
+
+char	*ft_strdup(char *s);
+
+
+char	*ft_strjoin(char *s1, char *s2);
 
 #endif
