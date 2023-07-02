@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
+/*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:03 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 08:21:40 by morishitash      ###   ########.fr       */
+/*   Updated: 2023/07/02 13:16:12 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@
 # include <limits.h>
 # include <stdio.h>
 
-
 char	*get_next_line(int fd);
+size_t	ft_strlen(char *s);
+char	*ft_strdup(char *s);
+char	*ft_strjoin(char *s1, char *s2);
+int		newline_ex(char *s, int c);
+size_t	newline_pos(char *s);
 
 #endif

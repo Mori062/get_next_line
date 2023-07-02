@@ -3,201 +3,140 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: morishitashoto <morishitashoto@student.    +#+  +:+       +#+        */
+/*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/11 00:04:36 by morishitash       #+#    #+#             */
-/*   Updated: 2023/06/29 09:01:40 by morishitash      ###   ########.fr       */
+/*   Created: 2023/06/11 00:21:31 by shmorish          #+#    #+#             */
+/*   Updated: 2023/07/02 13:16:07 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	newline_ex(char *s, int c)
+char	*get_before_newline(char *s)
 {
+	char	*ret;
 	size_t	i;
 
 	i = 0;
-	while (s[i])
+	ret = (char *)malloc(sizeof(char) * (newline_pos(s) + 1));
+	if (!ret)
+		return (NULL);
+	while (s[i] && s[i] != '\n')
 	{
-		if (s[i] == c)
-			return (0);
+		ret[i] = s[i];
 		i++;
 	}
-	if (s[i] == c)
-		return (0);
-	return (1);
+	if (s[i] == '\n')
+		ret[i++] = '\n';
+	ret[i] = '\0';
+	return (ret);
 }
 
-size_t	ft_strlen(char *s)
+char	*get_after_newline(char *s)
 {
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
-
-size_t	newline_pos(char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-	{
-		if (s[i] == '\n')
-			return (i + 1);
-		i++;
-	}
-	return (i);
-}
-
-char	*ft_strdup(char *s)
-{
-	char	*str;
+	char	*ret;
 	size_t	i;
 	size_t	j;
 
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!str)
-		return (NULL);
 	i = 0;
 	j = 0;
+	ret = (char *)malloc(sizeof(char) * (ft_strlen(s) - newline_pos(s) + 1));
+	if (!ret)
+		return (NULL);
+	while (s[i] && s[i] != '\n')
+		i++;
+	i++;
+	if (s[i] == '\0')
+	{
+		free(ret);
+		free(s);
+		return (NULL);
+	}
 	while (s[i])
-		str[j++] = s[i++];
-	str[i] = '\0';
-	// free(s);
-	return (str);
+		ret[j++] = s[i++];
+	ret[j] = '\0';
+	free(s);
+	return (ret);
 }
 
-char	*ft_strnjoin(char *s1, char *s2, size_t len, size_t check)
+char	*output_utils(char **store, char *buf, int flag)
 {
-	char	*str;
-	size_t	i;
-	size_t	j;
+	char	*line;
 
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + len + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	j = 0;
-	if (s1)
+	if (flag == 0)
 	{
-		while (s1[i])
-			str[j++] = s1[i++];
+		line = get_before_newline(*store);
+		*store = get_after_newline(*store);
+		free(buf);
+		return (line);
 	}
-	i = 0;
-	if (s2)
+	else
 	{
-		while (s2[i] && i < len)
-			str[j++] = s2[i++];
+		line = ft_strdup(*store);
+		free(*store);
+		*store = NULL;
+		free(buf);
+		return (line);
 	}
-	str[j] = '\0';
-	if (check == 1)
-		free(s1);
-	return (str);
 }
 
-char	*keep_store(char *buff, size_t pos, size_t check)
+char	*free_and_return_null(char *buf)
 {
-	char	*tmp;
-	size_t	i;
-
-	i = 0;
-	if (!buff)
-	{
-		free(buff);
-		return (NULL);
-	}
-	tmp = (char *)malloc(sizeof(char) * (ft_strlen(buff) - pos + 1));
-	if (!tmp)
-		return (NULL);
-	while (buff[pos])
-		tmp[i++] = buff[pos++];
-	tmp[i] = '\0';
-	if (check == 1)
-		free(buff);
-	return (tmp);
+	free(buf);
+	return (NULL);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buff;
-	char		*arr;
-	static char	*storage[OPEN_MAX];
-	size_t		read_size;
+	static char	*store[OPEN_MAX];
+	char		*buf;
+	int			read_size;
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
 		return (NULL);
-	// arr = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	// if (!arr)
-	// 	return (NULL);
-	arr = NULL;
-	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buff)
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
 		return (NULL);
-	if (storage[fd])
-		arr = ft_strdup(storage[fd]);
 	while (1)
 	{
-		read_size = read(fd, buff, BUFFER_SIZE);
-		if (read_size < 0)
-			break ;
-		buff[read_size] = '\0';
-		if (!buff[0] && arr[0])
-			return (arr);
-		if (read_size == 0)
-		{
-			free(buff);
-			return (NULL);
-		}
-		if (newline_pos(arr) != ft_strlen(arr))
-		{
-			arr = ft_strnjoin(NULL, storage[fd], newline_pos(storage[fd]), 0);
-			storage[fd] = keep_store(storage[fd], newline_pos(storage[fd]), 1);
-			storage[fd] = ft_strnjoin(storage[fd], buff, newline_pos(buff), 1);
-		}
+		read_size = read(fd, buf, BUFFER_SIZE);
+		if ((read_size == -1) || (read_size == 0 && store[fd] == NULL))
+			return (free_and_return_null(buf));
+		buf[read_size] = '\0';
+		if (store[fd] == NULL)
+			store[fd] = ft_strdup(buf);
 		else
-		{
-			arr = ft_strnjoin(arr, buff, newline_pos(buff), 1);
-			storage[fd] = keep_store(buff, newline_pos(buff), 0);
-		}
-		if (newline_ex(arr, '\n') == 0)
-			break ;
-		// free(buff);
+			store[fd] = ft_strjoin(store[fd], buf);
+		if (!newline_ex(store[fd], '\n'))
+			return (output_utils(&store[fd], buf, 0));
+		if (read_size == 0)
+			return (output_utils(&store[fd], buf, 1));
 	}
-	free(buff);
-	return (arr);
 }
 
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	char	*test = "";
-	int		fd;
-	int		i;
+// #include <fcntl.h>
+// #include <stdio.h>
+// int	main(void)
+// {
+// 	char	*test = "";
+// 	int		fd1;
+// 	int		i;
 
-	fd = open("test1.txt", O_RDONLY);
-	i = 0;
-	while (1)
-	{
-		test = get_next_line(fd);
-		printf("%d: %s", i++, test);
-		if (test == NULL)
-			break ;
-		free(test);
-	}
-	printf("\n");
-	close(fd);
-}
+// 	fd1 = open("test1.txt", O_RDONLY);
+// 	i = 0;
+// 	while (1)
+// 	{
+// 		test = get_next_line(fd1);
+// 		printf("%d: %s", i++, test);
+// 		if (test == NULL)
+// 			break ;
+// 		free(test);
+// 	}
+// 	printf("\n");
+// 	close(fd1);
+// }
 
 // __attribute__((destructor))
 // static void	destructor(void){
 // 	system("leaks -q a.out");
 // }
-
