@@ -6,7 +6,7 @@
 /*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 00:05:00 by morishitash       #+#    #+#             */
-/*   Updated: 2023/07/02 08:33:29 by shmorish         ###   ########.fr       */
+/*   Updated: 2023/07/02 13:05:50 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,36 @@ char	*ft_strjoin(char *s1, char *s2)
 	ret[j] = 0;
 	free(s1);
 	return (ret);
+}
+
+int	newline_ex(char *s, int c)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+			return (0);
+		i++;
+	}
+	if (s[i] == c)
+		return (0);
+	return (1);
+}
+
+size_t	newline_pos(char *s)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+	{
+		if (s[i] == '\n')
+			return (i + 1);
+		i++;
+	}
+	return (i);
 }

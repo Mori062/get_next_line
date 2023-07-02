@@ -6,7 +6,7 @@
 /*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 08:35:43 by shmorish          #+#    #+#             */
-/*   Updated: 2023/07/02 08:35:44 by shmorish         ###   ########.fr       */
+/*   Updated: 2023/07/02 13:06:15 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,11 @@
 # include <limits.h>
 # include <stdio.h>
 
-
 char	*get_next_line(int fd);
 size_t	ft_strlen(char *s);
-
-
 char	*ft_strdup(char *s);
-
-
 char	*ft_strjoin(char *s1, char *s2);
+int		newline_ex(char *s, int c);
+size_t	newline_pos(char *s);
 
 #endif

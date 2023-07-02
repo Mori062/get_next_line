@@ -6,43 +6,11 @@
 /*   By: shmorish <shmorish@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 11:32:15 by morishitash       #+#    #+#             */
-/*   Updated: 2023/07/02 08:35:03 by shmorish         ###   ########.fr       */
+/*   Updated: 2023/07/02 13:05:34 by shmorish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-
-int	newline_ex(char *s, int c)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == c)
-			return (0);
-		i++;
-	}
-	if (s[i] == c)
-		return (0);
-	return (1);
-}
-
-size_t	newline_pos(char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-	{
-		if (s[i] == '\n')
-			return (i + 1);
-		i++;
-	}
-	return (i);
-}
 
 char	*get_before_newline(char *s)
 {
@@ -91,11 +59,37 @@ char	*get_after_newline(char *s)
 	return (ret);
 }
 
+char	*output_utils(char **store, char *buf, int flag)
+{
+	char	*line;
+
+	if (flag == 0)
+	{
+		line = get_before_newline(*store);
+		*store = get_after_newline(*store);
+		free(buf);
+		return (line);
+	}
+	else
+	{
+		line = ft_strdup(*store);
+		free(*store);
+		*store = NULL;
+		free(buf);
+		return (line);
+	}
+}
+
+char	*free_and_return_null(char *buf)
+{
+	free(buf);
+	return (NULL);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*store[OPEN_MAX];
 	char		*buf;
-	char		*line;
 	int			read_size;
 
 	if (fd < 0 || OPEN_MAX <= fd || BUFFER_SIZE <= 0)
@@ -106,36 +100,17 @@ char	*get_next_line(int fd)
 	while (1)
 	{
 		read_size = read(fd, buf, BUFFER_SIZE);
-		if (read_size == -1)
-		{
-			free(buf);
-			return (NULL);
-		}
-		if (read_size == 0 && store[fd] == NULL)
-		{
-			free(buf);
-			return (NULL);
-		}
+		if ((read_size == -1) || (read_size == 0 && store[fd] == NULL))
+			return (free_and_return_null(buf));
 		buf[read_size] = '\0';
 		if (store[fd] == NULL)
 			store[fd] = ft_strdup(buf);
 		else
 			store[fd] = ft_strjoin(store[fd], buf);
 		if (!newline_ex(store[fd], '\n'))
-		{
-			line = get_before_newline(store[fd]);
-			store[fd] = get_after_newline(store[fd]);
-			free(buf);
-			return (line);
-		}
+			return (output_utils(&store[fd], buf, 0));
 		if (read_size == 0)
-		{
-			line = ft_strdup(store[fd]);
-			free(store[fd]);
-			store[fd] = NULL;
-			free(buf);
-			return (line);
-		}
+			return (output_utils(&store[fd], buf, 1));
 	}
 }
 
@@ -143,22 +118,24 @@ char	*get_next_line(int fd)
 // #include <stdio.h>
 // int	main(void)
 // {
-// 	char	*test = "";
+// 	char	*test;
 // 	int		fd1;
+// 	int		fd2;
 // 	int		i;
 
 // 	fd1 = open("test1.txt", O_RDONLY);
+// 	fd2 = open("test2.txt", O_RDONLY);
 // 	i = 0;
-// 	while (1)
+// 	for(int i = 0; i < 10; i++)
 // 	{
 // 		test = get_next_line(fd1);
-// 		printf("%d: %s", i++, test);
-// 		if (test == NULL)
-// 			break ;
+// 		printf("%d: %s\n", i, test);
+// 		free(test);
+// 		test = get_next_line(fd2);
+// 		printf("%d: %s\n", i, test);
 // 		free(test);
 // 	}
 // 	printf("\n");
-// 	close(fd1);
 // }
 
 // __attribute__((destructor))
